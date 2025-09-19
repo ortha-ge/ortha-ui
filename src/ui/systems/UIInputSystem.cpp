@@ -8,6 +8,7 @@ module;
 module UI.UIInputSystem;
 
 import Core.GlobalSpatial;
+import Gfx.Camera;
 import Input.MouseState;
 import UI.Button;
 
@@ -28,6 +29,7 @@ namespace UI {
 
 	void UIInputSystem::tickSystem(entt::registry& registry) {
 		using namespace Core;
+		using namespace Gfx;
 		using namespace Input;
 
 		MouseState mouseState;
@@ -36,16 +38,24 @@ namespace UI {
 				mouseState = inputMouseState;
 			});
 
+		glm::vec3 cameraPosition;
+		registry.view<Camera, GlobalSpatial>()
+			.each([&cameraPosition](const Camera&, GlobalSpatial& globalSpatial) {
+				cameraPosition = globalSpatial.position;
+			});
+
 		registry.view<Button, GlobalSpatial>()
-			.each([&mouseState](Button& button, const GlobalSpatial& spatial) {
+			.each([&mouseState, cameraPosition](Button& button, const GlobalSpatial& spatial) {
 				const float halfQuadWidth = spatial.scale.x * 0.5f;
 				const float halfQuadHeight = spatial.scale.y * 0.5f;
 
+				const glm::vec3 localPosition = spatial.position - cameraPosition;
+
 				// TODO: get screen space position of spatial
-				if (mouseState.x > spatial.position.x - halfQuadWidth &&
-					mouseState.x < spatial.position.x + halfQuadWidth &&
-					mouseState.y > spatial.position.y - halfQuadHeight &&
-					mouseState.y < spatial.position.y + halfQuadHeight) {
+				if (mouseState.x > localPosition.x - halfQuadWidth &&
+					mouseState.x < localPosition.x + halfQuadWidth &&
+					mouseState.y > localPosition.y - halfQuadHeight &&
+					mouseState.y < localPosition.y + halfQuadHeight) {
 
 					const bool isPressed = isMouseButtonPressed(mouseState, MouseButton::Left);
 					button.state = isPressed ? ButtonState::Pressed : ButtonState::Hovered;
