@@ -24,7 +24,8 @@ export namespace UI {
 		Core::Scheduler& mScheduler;
 		Core::TaskHandle mTickHandle;
 
-		Core::ResourceHandlePtr mUIMaterial;
+		Core::ResourceHandlePtr mUIColourMaterial;
+		Core::ResourceHandlePtr mUIImageMaterial;
 
 	};
 

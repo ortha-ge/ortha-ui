@@ -10,6 +10,7 @@ set (ui-lib-src
 
 set (ui-lib-modules
         src/ui/Button.cppm
+        src/ui/ImageButton.cppm
         src/ui/services/UIInputSystemService.cppm
         src/ui/services/UIRenderSystemService.cppm
         src/ui/services/UISystemsService.cppm
