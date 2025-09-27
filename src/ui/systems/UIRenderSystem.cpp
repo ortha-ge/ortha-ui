@@ -14,10 +14,14 @@ import Core.JsonTypeLoaderAdapter;
 import Core.ResourceLoadRequest;
 import Core.ResourceHandleUtils;
 import Core.GlobalSpatial;
+import Core.Spatial;
+import Core.TypeId;
 import Core.TypeLoader;
+import Gfx.Camera;
 import Gfx.Image;
 import Gfx.IndexBuffer;
 import Gfx.Material;
+import Gfx.RenderCandidates;
 import Gfx.RenderCommand;
 import Gfx.ShaderProgram;
 import Gfx.VertexBuffer;
@@ -40,7 +44,7 @@ namespace UI::UIRenderSystemInternal {
 	};
 
 	Gfx::RenderCommand createUIColourElementRenderCommand(
-		entt::registry& registry, const Button& element, const Core::GlobalSpatial& spatial, const entt::entity viewportEntity,
+		entt::registry& registry, const Button& element, const Core::GlobalSpatial& spatial, const Gfx::Camera& camera, const glm::mat4& viewMatrix,
 		const entt::entity shaderProgramEntity) {
 
 		using namespace Gfx;
@@ -49,6 +53,7 @@ namespace UI::UIRenderSystemInternal {
 		const float halfQuadHeight = spatial.scale.y * 0.5f;
 
 		VertexBuffer vertexBuffer;
+		vertexBuffer.vertexLayout = shaderProgramEntity;
 		vertexBuffer.data.resize(sizeof(UIColourVertex) * 4);
 		auto* vertexHead = reinterpret_cast<UIColourVertex*>(vertexBuffer.data.data());
 
@@ -75,7 +80,7 @@ namespace UI::UIRenderSystemInternal {
 		indexHead[5] = 2;
 
 		RenderCommand renderCommand;
-		renderCommand.viewportEntity = viewportEntity;
+		renderCommand.viewportEntity = camera.viewport;
 		renderCommand.shaderProgram = shaderProgramEntity;
 
 		renderCommand.vertexBuffer = registry.create();
@@ -87,11 +92,12 @@ namespace UI::UIRenderSystemInternal {
 		registry.emplace<IndexBuffer>(renderCommand.indexBuffer, indexBuffer);
 
 		renderCommand.renderPass = 10;
+		renderCommand.viewMatrix = viewMatrix;
 		return renderCommand;
 	}
 
 	Gfx::RenderCommand createUIImageElementRenderCommand(
-		entt::registry& registry, const ImageButton& element, const Core::GlobalSpatial& spatial, const entt::entity viewportEntity,
+		entt::registry& registry, const ImageButton& element, const Core::GlobalSpatial& spatial, const Gfx::Camera& camera, const glm::mat4& viewMatrix,
 		const entt::entity shaderProgramEntity, const entt::entity imageEntity) {
 		using namespace Core;
 		using namespace Gfx;
@@ -100,6 +106,7 @@ namespace UI::UIRenderSystemInternal {
 		const float halfQuadHeight = spatial.scale.y * 0.5f;
 
 		VertexBuffer vertexBuffer;
+		vertexBuffer.vertexLayout = shaderProgramEntity;
 		vertexBuffer.data.resize(sizeof(UIImageVertex) * 4);
 		auto* vertexHead = reinterpret_cast<UIImageVertex*>(vertexBuffer.data.data());
 
@@ -126,7 +133,7 @@ namespace UI::UIRenderSystemInternal {
 		indexHead[5] = 2;
 
 		RenderCommand renderCommand;
-		renderCommand.viewportEntity = viewportEntity;
+		renderCommand.viewportEntity = camera.viewport;
 		renderCommand.shaderProgram = shaderProgramEntity;
 
 		renderCommand.vertexBuffer = registry.create();
@@ -141,6 +148,8 @@ namespace UI::UIRenderSystemInternal {
 
 		renderCommand.uniformData["s_texColour"] = Any(entt::entity{ imageEntity });
 		renderCommand.uniformData["u_alphaColour"] = Any(glm::vec4{ 0.0f, 0.0f, 0.0f, 0.0f });
+
+		renderCommand.viewMatrix = viewMatrix;
 
 		return renderCommand;
 	}
@@ -158,7 +167,7 @@ namespace UI {
 
 		mTickHandle = mScheduler.schedule([this] {
 			tickSystem(mRegistry);
-		});
+		}, 100);
 	}
 
 	UIRenderSystem::~UIRenderSystem() {
@@ -189,34 +198,77 @@ namespace UI {
 			return;
 		}
 
-		auto viewportView = registry.view<Viewport>();
-		if (viewportView.empty()) {
-			return;
-		}
+		registry.view<Camera>()
+			.each([&registry](const entt::entity entity, const Camera&) {
+				RenderCandidates& renderCandidates = registry.get_or_emplace<RenderCandidates>(entity);
 
-		const entt::entity viewportEntity = viewportView.front();
+				if (!renderCandidates.candidateBuckets.contains(TypeId::get<Button>())) {
+					auto renderCandidateVisitor = [&registry](RenderCandidateBucket::EntityList& entityList, const entt::entity entity) {
+						if (!registry.all_of<Button>(entity)) {
+							return;
+						}
 
-		registry.view<Button, GlobalSpatial>()
-			.each([this, &registry, colourShaderProgramEntity, viewportEntity](const Button& button, const GlobalSpatial& spatial) {
-				using namespace UIRenderSystemInternal;
-				RenderCommand renderCommand = createUIColourElementRenderCommand(registry, button, spatial, viewportEntity, colourShaderProgramEntity);
+						entityList.emplace_back(entity);
+					};
 
-				entt::entity renderCommandEntity = registry.create();
-				registry.emplace<RenderCommand>(renderCommandEntity, std::move(renderCommand));
-			});
-
-		registry.view<ImageButton, GlobalSpatial>()
-			.each([this, &registry, imageShaderProgramEntity, viewportEntity](const ImageButton& button, const GlobalSpatial& spatial) {
-				using namespace UIRenderSystemInternal;
-				auto&& [imageEntity, image] = getResourceAndEntity<Image>(registry, button.image);
-				if (!image) {
-					return;
+					renderCandidates.candidateBuckets.emplace(TypeId::get<Button>(), renderCandidateVisitor);
 				}
 
-				RenderCommand renderCommand = createUIImageElementRenderCommand(registry, button, spatial, viewportEntity, imageShaderProgramEntity, imageEntity);
+				if (!renderCandidates.candidateBuckets.contains(TypeId::get<ImageButton>())) {
+					auto renderCandidateVisitor = [&registry](RenderCandidateBucket::EntityList& entityList, const entt::entity entity) {
+						if (!registry.all_of<ImageButton>(entity)) {
+							return;
+						}
 
-				entt::entity renderCommandEntity = registry.create();
-				registry.emplace<RenderCommand>(renderCommandEntity, std::move(renderCommand));
+						entityList.emplace_back(entity);
+					};
+
+					renderCandidates.candidateBuckets.emplace(TypeId::get<ImageButton>(), renderCandidateVisitor);
+				}
+			});
+
+		registry.view<Camera, Spatial, RenderCandidates>()
+			.each([&registry, colourShaderProgramEntity, imageShaderProgramEntity](const entt::entity, const Camera& camera, const Spatial& cameraSpatial, const RenderCandidates& renderCandidates) {
+				using namespace UIRenderSystemInternal;
+
+				glm::mat4 translation = glm::translate(glm::mat4(1.0f), cameraSpatial.position);
+				glm::mat4 rotation = glm::mat4_cast(cameraSpatial.rotation);
+				glm::mat4 scale = glm::scale(glm::mat4(1.0f), cameraSpatial.scale);
+				glm::mat4 viewMatrix{ glm::inverse(translation * rotation * scale) };
+
+				if (renderCandidates.candidateBuckets.contains(TypeId::get<Button>())) {
+					const auto& buttonRenderCandidates{ renderCandidates.candidateBuckets.at(TypeId::get<Button>()) };
+					for (auto&& buttonEntity : buttonRenderCandidates.entityList) {
+						if (!registry.all_of<Button, GlobalSpatial>(buttonEntity)) {
+							continue;
+						}
+
+						const auto& [button, spatial] = registry.get<Button, GlobalSpatial>(buttonEntity);
+						RenderCommand renderCommand = createUIColourElementRenderCommand(registry, button, spatial, camera, viewMatrix, colourShaderProgramEntity);
+						entt::entity renderCommandEntity = registry.create();
+						registry.emplace<RenderCommand>(renderCommandEntity, std::move(renderCommand));
+					}
+				}
+
+				if (renderCandidates.candidateBuckets.contains(TypeId::get<ImageButton>())) {
+					const auto& buttonRenderCandidates{ renderCandidates.candidateBuckets.at(TypeId::get<ImageButton>()) };
+					for (auto&& buttonEntity : buttonRenderCandidates.entityList) {
+						if (!registry.all_of<ImageButton, GlobalSpatial>(buttonEntity)) {
+							continue;
+						}
+
+						const auto& [imageButton, spatial] = registry.get<ImageButton, GlobalSpatial>(buttonEntity);
+
+						auto&& [imageEntity, image] = getResourceAndEntity<Image>(registry, imageButton.image);
+						if (!image) {
+							return;
+						}
+
+						RenderCommand renderCommand = createUIImageElementRenderCommand(registry, imageButton, spatial, camera, viewMatrix, imageShaderProgramEntity, imageEntity);
+						entt::entity renderCommandEntity = registry.create();
+						registry.emplace<RenderCommand>(renderCommandEntity, std::move(renderCommand));
+					}
+				}
 			});
 	}
 
