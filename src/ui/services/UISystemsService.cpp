@@ -1,7 +1,3 @@
-module;
-
-#include <entt/entt.hpp>
-
 module UI.SystemsService;
 
 import UI.UIInputSystemService;

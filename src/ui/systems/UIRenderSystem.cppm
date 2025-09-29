@@ -1,26 +1,22 @@
-module;
-
-#include <entt/fwd.hpp>
-
 export module UI.UIRenderSystem;
 
-import Core.EnTTRegistry;
 import Core.ResourceHandle;
 import Core.Scheduler;
+import entt;
 
 export namespace UI {
 
 	class UIRenderSystem {
 	public:
 
-		UIRenderSystem(Core::EnTTRegistry&, Core::Scheduler&);
+		UIRenderSystem(entt::registry&, Core::Scheduler&);
 		~UIRenderSystem();
 
 		void tickSystem(entt::registry&);
 
 	private:
 
-		Core::EnTTRegistry& mRegistry;
+		entt::registry& mRegistry;
 		Core::Scheduler& mScheduler;
 		Core::TaskHandle mTickHandle;
 

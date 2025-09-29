@@ -2,9 +2,6 @@ module;
 
 #include <utility>
 
-#include <entt/entt.hpp>
-#include <glm/vec3.hpp>
-
 module UI.UIInputSystem;
 
 import Core.GlobalSpatial;
@@ -12,6 +9,8 @@ import Gfx.Camera;
 import Input.MouseState;
 import UI.Button;
 import UI.ImageButton;
+import entt;
+import glm;
 
 namespace UI::UIInputSystemInternal {
 
@@ -42,7 +41,7 @@ namespace UI::UIInputSystemInternal {
 
 namespace UI {
 
-	UIInputSystem::UIInputSystem(Core::EnTTRegistry& registry, Core::Scheduler& scheduler)
+	UIInputSystem::UIInputSystem(entt::registry& registry, Core::Scheduler& scheduler)
 		: mRegistry(registry)
 		, mScheduler(scheduler) {
 

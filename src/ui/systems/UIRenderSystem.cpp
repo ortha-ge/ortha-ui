@@ -2,10 +2,7 @@ module;
 
 #include <cstdint>
 #include <utility>
-
-#include <entt/entt.hpp>
-#include <glm/glm.hpp>
-#include <glm/gtc/quaternion.hpp>
+#include <vector>
 
 module UI.UIRenderSystem;
 
@@ -29,6 +26,8 @@ import Gfx.Viewport;
 import Gfx.Reflection.MaterialDescriptor;
 import UI.Button;
 import UI.ImageButton;
+import entt;
+import glm;
 
 namespace UI::UIRenderSystemInternal {
 
@@ -157,7 +156,7 @@ namespace UI::UIRenderSystemInternal {
 
 namespace UI {
 
-	UIRenderSystem::UIRenderSystem(Core::EnTTRegistry& registry, Core::Scheduler& scheduler)
+	UIRenderSystem::UIRenderSystem(entt::registry& registry, Core::Scheduler& scheduler)
 		: mRegistry(registry)
 		, mScheduler(scheduler) {
 

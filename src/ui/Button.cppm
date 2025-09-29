@@ -3,9 +3,10 @@ module;
 #include <cstdint>
 #include <string>
 
-#include <glm/vec3.hpp>
 
 export module UI.Button;
+
+import glm;
 
 export namespace UI {
 
