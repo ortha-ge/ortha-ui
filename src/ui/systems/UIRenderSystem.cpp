@@ -1,18 +1,19 @@
 module;
 
 #include <cstdint>
+#include <memory>
 #include <utility>
 #include <vector>
 
 module UI.UIRenderSystem;
 
-import Core.Any;
+import Ortha.RTTI.Any;
 import Core.JsonTypeLoaderAdapter;
 import Core.ResourceLoadRequest;
 import Core.ResourceHandleUtils;
 import Core.GlobalSpatial;
 import Core.Spatial;
-import Core.TypeId;
+import Ortha.RTTI.TypeId;
 import Core.TypeLoader;
 import Gfx.Camera;
 import Gfx.Image;
@@ -145,8 +146,8 @@ namespace UI::UIRenderSystemInternal {
 
 		renderCommand.renderPass = 10;
 
-		renderCommand.uniformData["s_texColour"] = Any(entt::entity{ imageEntity });
-		renderCommand.uniformData["u_alphaColour"] = Any(glm::vec4{ 0.0f, 0.0f, 0.0f, 0.0f });
+		renderCommand.uniformData["s_texColour"] = Ortha::RTTI::Any(entt::entity{ imageEntity });
+		renderCommand.uniformData["u_alphaColour"] = Ortha::RTTI::Any(glm::vec4{ 0.0f, 0.0f, 0.0f, 0.0f });
 
 		renderCommand.viewMatrix = viewMatrix;
 
@@ -201,7 +202,7 @@ namespace UI {
 			.each([&registry](const entt::entity entity, const Camera&) {
 				RenderCandidates& renderCandidates = registry.get_or_emplace<RenderCandidates>(entity);
 
-				if (!renderCandidates.candidateBuckets.contains(TypeId::get<Button>())) {
+				if (!renderCandidates.candidateBuckets.contains(Ortha::RTTI::TypeId::get<Button>())) {
 					auto renderCandidateVisitor = [&registry](RenderCandidateBucket::EntityList& entityList, const entt::entity entity) {
 						if (!registry.all_of<Button>(entity)) {
 							return;
@@ -210,10 +211,10 @@ namespace UI {
 						entityList.emplace_back(entity);
 					};
 
-					renderCandidates.candidateBuckets.emplace(TypeId::get<Button>(), renderCandidateVisitor);
+					renderCandidates.candidateBuckets.emplace(Ortha::RTTI::TypeId::get<Button>(), renderCandidateVisitor);
 				}
 
-				if (!renderCandidates.candidateBuckets.contains(TypeId::get<ImageButton>())) {
+				if (!renderCandidates.candidateBuckets.contains(Ortha::RTTI::TypeId::get<ImageButton>())) {
 					auto renderCandidateVisitor = [&registry](RenderCandidateBucket::EntityList& entityList, const entt::entity entity) {
 						if (!registry.all_of<ImageButton>(entity)) {
 							return;
@@ -222,7 +223,7 @@ namespace UI {
 						entityList.emplace_back(entity);
 					};
 
-					renderCandidates.candidateBuckets.emplace(TypeId::get<ImageButton>(), renderCandidateVisitor);
+					renderCandidates.candidateBuckets.emplace(Ortha::RTTI::TypeId::get<ImageButton>(), renderCandidateVisitor);
 				}
 			});
 
@@ -235,8 +236,8 @@ namespace UI {
 				glm::mat4 scale = glm::scale(glm::mat4(1.0f), cameraSpatial.scale);
 				glm::mat4 viewMatrix{ glm::inverse(translation * rotation * scale) };
 
-				if (renderCandidates.candidateBuckets.contains(TypeId::get<Button>())) {
-					const auto& buttonRenderCandidates{ renderCandidates.candidateBuckets.at(TypeId::get<Button>()) };
+				if (renderCandidates.candidateBuckets.contains(Ortha::RTTI::TypeId::get<Button>())) {
+					const auto& buttonRenderCandidates{ renderCandidates.candidateBuckets.at(Ortha::RTTI::TypeId::get<Button>()) };
 					for (auto&& buttonEntity : buttonRenderCandidates.entityList) {
 						if (!registry.all_of<Button, GlobalSpatial>(buttonEntity)) {
 							continue;
@@ -249,8 +250,8 @@ namespace UI {
 					}
 				}
 
-				if (renderCandidates.candidateBuckets.contains(TypeId::get<ImageButton>())) {
-					const auto& buttonRenderCandidates{ renderCandidates.candidateBuckets.at(TypeId::get<ImageButton>()) };
+				if (renderCandidates.candidateBuckets.contains(Ortha::RTTI::TypeId::get<ImageButton>())) {
+					const auto& buttonRenderCandidates{ renderCandidates.candidateBuckets.at(Ortha::RTTI::TypeId::get<ImageButton>()) };
 					for (auto&& buttonEntity : buttonRenderCandidates.entityList) {
 						if (!registry.all_of<ImageButton, GlobalSpatial>(buttonEntity)) {
 							continue;
