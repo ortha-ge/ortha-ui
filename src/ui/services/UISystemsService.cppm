@@ -1,11 +1,11 @@
 
-export module UI.SystemsService;
+export module Ortha.UI.SystemsService;
 
-export import UI.Systems;
+export import Ortha.UI.Systems;
 
 import kangaru;
 
-export namespace UI {
+export namespace Ortha::UI {
 
 	void initUISubSystems(UISystems&, kgr::container&);
 
@@ -13,4 +13,4 @@ export namespace UI {
 		: kgr::single_service<UISystems>
 		, kgr::autocall<kgr::invoke_method<initUISubSystems>>{};
 
-} // namespace UI
+} // namespace Ortha::UI

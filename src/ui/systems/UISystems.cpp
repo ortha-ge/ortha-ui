@@ -1,6 +1,6 @@
-module UI.Systems;
+module Ortha.UI.Systems;
 
-namespace UI {
+namespace Ortha::UI {
 
 	UISystems::UISystems() {
 
@@ -10,4 +10,4 @@ namespace UI {
 
 	}
 
-} // namespace UI
+} // namespace Ortha::UI

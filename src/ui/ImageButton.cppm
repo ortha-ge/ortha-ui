@@ -1,13 +1,13 @@
-export module UI.ImageButton;
+export module Ortha.UI.ImageButton;
 
-import UI.Button;
+import Ortha.UI.Button;
 
-import Core.ResourceHandle;
+import Ortha.Core.ResourceHandle;
 
-export namespace UI {
+export namespace Ortha::UI {
 
 	struct ImageButton : Button {
 		Core::ResourceHandlePtr image;
 	};
 
-} // namespace UI
+} // namespace Ortha::UI

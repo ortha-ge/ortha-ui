@@ -5,32 +5,32 @@ module;
 #include <utility>
 #include <vector>
 
-module UI.UIRenderSystem;
+module Ortha.UI.UIRenderSystem;
 
 import Ortha.RTTI.Any;
-import Core.JsonTypeLoaderAdapter;
-import Core.ResourceLoadRequest;
-import Core.ResourceHandleUtils;
-import Core.GlobalSpatial;
-import Core.Spatial;
+import Ortha.Core.JsonTypeLoaderAdapter;
+import Ortha.Core.ResourceLoadRequest;
+import Ortha.Core.ResourceHandleUtils;
+import Ortha.Core.GlobalSpatial;
+import Ortha.Core.Spatial;
 import Ortha.RTTI.TypeId;
-import Core.TypeLoader;
-import Gfx.Camera;
-import Gfx.Image;
-import Gfx.IndexBuffer;
-import Gfx.Material;
-import Gfx.RenderCandidates;
-import Gfx.RenderCommand;
-import Gfx.ShaderProgram;
-import Gfx.VertexBuffer;
-import Gfx.Viewport;
-import Gfx.Reflection.MaterialDescriptor;
-import UI.Button;
-import UI.ImageButton;
+import Ortha.Core.TypeLoader;
+import Ortha.Gfx.Camera;
+import Ortha.Gfx.Image;
+import Ortha.Gfx.IndexBuffer;
+import Ortha.Gfx.Material;
+import Ortha.Gfx.RenderCandidates;
+import Ortha.Gfx.RenderCommand;
+import Ortha.Gfx.ShaderProgram;
+import Ortha.Gfx.VertexBuffer;
+import Ortha.Gfx.Viewport;
+import Ortha.Gfx.Reflection.MaterialDescriptor;
+import Ortha.UI.Button;
+import Ortha.UI.ImageButton;
 import entt;
 import glm;
 
-namespace UI::UIRenderSystemInternal {
+namespace Ortha::UI::UIRenderSystemInternal {
 
 	struct UIColourVertex {
 		glm::vec3 position;
@@ -47,7 +47,7 @@ namespace UI::UIRenderSystemInternal {
 		entt::registry& registry, const Button& element, const Core::GlobalSpatial& spatial, const Gfx::Camera& camera, const glm::mat4& viewMatrix,
 		const entt::entity shaderProgramEntity) {
 
-		using namespace Gfx;
+		using namespace Ortha::Gfx;
 
 		const float halfQuadWidth = spatial.scale.x * 0.5f;
 		const float halfQuadHeight = spatial.scale.y * 0.5f;
@@ -100,7 +100,7 @@ namespace UI::UIRenderSystemInternal {
 		entt::registry& registry, const ImageButton& element, const Core::GlobalSpatial& spatial, const Gfx::Camera& camera, const glm::mat4& viewMatrix,
 		const entt::entity shaderProgramEntity, const entt::entity imageEntity) {
 		using namespace Core;
-		using namespace Gfx;
+		using namespace Ortha::Gfx;
 
 		const float halfQuadWidth = spatial.scale.x * 0.5f;
 		const float halfQuadHeight = spatial.scale.y * 0.5f;
@@ -155,13 +155,13 @@ namespace UI::UIRenderSystemInternal {
 	}
 }
 
-namespace UI {
+namespace Ortha::UI {
 
 	UIRenderSystem::UIRenderSystem(entt::registry& registry, Core::Scheduler& scheduler)
 		: mRegistry(registry)
 		, mScheduler(scheduler) {
 
-		auto typeLoaderAdapter = std::make_shared<Core::JsonTypeLoaderAdapter<Gfx::MaterialDescriptor>>();
+		auto typeLoaderAdapter = std::make_shared<Core::JsonTypeLoaderAdapter<Ortha::Gfx::MaterialDescriptor>>();
 		mUIColourMaterial = Core::ResourceLoadRequest::create<Core::TypeLoader>(registry, "assets/materials/ui_colour.json", typeLoaderAdapter);
 		mUIImageMaterial = Core::ResourceLoadRequest::create<Core::TypeLoader>(registry, "assets/materials/ui_image.json", typeLoaderAdapter);
 
@@ -176,7 +176,7 @@ namespace UI {
 
 	void UIRenderSystem::tickSystem(entt::registry& registry) {
 		using namespace Core;
-		using namespace Gfx;
+		using namespace Ortha::Gfx;
 
 		const auto* colourMaterial = getResource<Material>(registry, mUIColourMaterial);
 		if (!colourMaterial) {
@@ -272,4 +272,4 @@ namespace UI {
 			});
 	}
 
-} // namespace UI
+} // namespace Ortha::UI

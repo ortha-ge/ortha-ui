@@ -4,11 +4,11 @@ module;
 #include <string>
 
 
-export module UI.Button;
+export module Ortha.UI.Button;
 
 import glm;
 
-export namespace UI {
+export namespace Ortha::UI {
 
 	enum class ButtonState : uint8_t {
 		Default,
@@ -24,4 +24,4 @@ export namespace UI {
 		ButtonState state{ ButtonState::Default };
 	};
 
-} // namespace UI
+} // namespace Ortha::UI

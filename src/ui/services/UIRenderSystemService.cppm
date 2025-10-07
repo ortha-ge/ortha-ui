@@ -1,15 +1,15 @@
 
-export module UI.UIRenderSystemService;
+export module Ortha.UI.UIRenderSystemService;
 
-export import UI.UIRenderSystem;
+export import Ortha.UI.UIRenderSystem;
 
 import kangaru;
-import Core.EnTTRegistryService;
-import Core.SchedulerService;
+import Ortha.Core.EnTTRegistryService;
+import Ortha.Core.SchedulerService;
 
-export namespace UI {
+export namespace Ortha::UI {
 
 	struct UIRenderSystemService
 		: kgr::single_service<UIRenderSystem, kgr::dependency<Core::EnTTRegistryService, Core::SchedulerService>>{};
 
-} // namespace UI
+} // namespace Ortha::UI

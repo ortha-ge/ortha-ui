@@ -1,6 +1,6 @@
-export module UI.Systems;
+export module Ortha.UI.Systems;
 
-export namespace UI {
+export namespace Ortha::UI {
 
 	class UISystems {
 	public:
@@ -10,4 +10,4 @@ export namespace UI {
 
 	};
 
-} // namespace UI
+} // namespace Ortha::UI

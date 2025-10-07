@@ -1,9 +1,9 @@
-export module UI.UIInputSystem;
+export module Ortha.UI.UIInputSystem;
 
-import Core.Scheduler;
+import Ortha.Core.Scheduler;
 import entt;
 
-export namespace UI {
+export namespace Ortha::UI {
 
 	class UIInputSystem {
 	public:
@@ -21,4 +21,4 @@ export namespace UI {
 
 	};
 
-} // namespace UI
+} // namespace Ortha::UI

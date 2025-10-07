@@ -1,13 +1,13 @@
-module UI.SystemsService;
+module Ortha.UI.SystemsService;
 
-import UI.UIInputSystemService;
-import UI.UIRenderSystemService;
+import Ortha.UI.UIInputSystemService;
+import Ortha.UI.UIRenderSystemService;
 
-namespace UI {
+namespace Ortha::UI {
 
 	void initUISubSystems(UISystems&, kgr::container& container) {
 		container.emplace<UIInputSystemService>();
 		container.emplace<UIRenderSystemService>();
 	}
 
-} // namespace Audio
+} // namespace Ortha::Audio

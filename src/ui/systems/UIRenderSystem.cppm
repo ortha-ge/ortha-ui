@@ -1,10 +1,10 @@
-export module UI.UIRenderSystem;
+export module Ortha.UI.UIRenderSystem;
 
-import Core.ResourceHandle;
-import Core.Scheduler;
+import Ortha.Core.ResourceHandle;
+import Ortha.Core.Scheduler;
 import entt;
 
-export namespace UI {
+export namespace Ortha::UI {
 
 	class UIRenderSystem {
 	public:
@@ -25,4 +25,4 @@ export namespace UI {
 
 	};
 
-} // namespace UI
+} // namespace Ortha::UI

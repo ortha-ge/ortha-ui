@@ -2,23 +2,23 @@ module;
 
 #include <utility>
 
-module UI.UIInputSystem;
+module Ortha.UI.UIInputSystem;
 
-import Core.GlobalSpatial;
-import Gfx.Camera;
-import Input.MouseState;
-import UI.Button;
-import UI.ImageButton;
+import Ortha.Core.GlobalSpatial;
+import Ortha.Gfx.Camera;
+import Ortha.Input.MouseState;
+import Ortha.UI.Button;
+import Ortha.UI.ImageButton;
 import entt;
 import glm;
 
-namespace UI::UIInputSystemInternal {
+namespace Ortha::UI::UIInputSystemInternal {
 
 	template <typename UIElement>
 	void processUIElementMouseState(
 		UIElement& element, const glm::vec3& cameraPosition, const Core::GlobalSpatial& spatial,
 		const Input::MouseState& mouseState) {
-		using namespace Input;
+		using namespace Ortha::Input;
 
 		const float halfQuadWidth = spatial.scale.x * 0.5f;
 		const float halfQuadHeight = spatial.scale.y * 0.5f;
@@ -39,7 +39,7 @@ namespace UI::UIInputSystemInternal {
 
 }
 
-namespace UI {
+namespace Ortha::UI {
 
 	UIInputSystem::UIInputSystem(entt::registry& registry, Core::Scheduler& scheduler)
 		: mRegistry(registry)
@@ -83,4 +83,4 @@ namespace UI {
 			});
 	}
 
-} // namespace UI
+} // namespace Ortha::UI

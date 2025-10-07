@@ -1,15 +1,15 @@
 
-export module UI.UIInputSystemService;
+export module Ortha.UI.UIInputSystemService;
 
-export import UI.UIInputSystem;
+export import Ortha.UI.UIInputSystem;
 
 import kangaru;
-import Core.EnTTRegistryService;
-import Core.SchedulerService;
+import Ortha.Core.EnTTRegistryService;
+import Ortha.Core.SchedulerService;
 
-export namespace UI {
+export namespace Ortha::UI {
 
 	struct UIInputSystemService
 		: kgr::single_service<UIInputSystem, kgr::dependency<Core::EnTTRegistryService, Core::SchedulerService>>{};
 
-} // namespace UI
+} // namespace Ortha::UI
