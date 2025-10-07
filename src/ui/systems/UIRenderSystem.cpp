@@ -47,7 +47,7 @@ namespace Ortha::UI::UIRenderSystemInternal {
 		entt::registry& registry, const Button& element, const Core::GlobalSpatial& spatial, const Gfx::Camera& camera, const glm::mat4& viewMatrix,
 		const entt::entity shaderProgramEntity) {
 
-		using namespace Ortha::Gfx;
+		using namespace Gfx;
 
 		const float halfQuadWidth = spatial.scale.x * 0.5f;
 		const float halfQuadHeight = spatial.scale.y * 0.5f;
@@ -99,8 +99,8 @@ namespace Ortha::UI::UIRenderSystemInternal {
 	Gfx::RenderCommand createUIImageElementRenderCommand(
 		entt::registry& registry, const ImageButton& element, const Core::GlobalSpatial& spatial, const Gfx::Camera& camera, const glm::mat4& viewMatrix,
 		const entt::entity shaderProgramEntity, const entt::entity imageEntity) {
-		using namespace Core;
-		using namespace Ortha::Gfx;
+		using namespace Ortha::Core;
+		using namespace Gfx;
 
 		const float halfQuadWidth = spatial.scale.x * 0.5f;
 		const float halfQuadHeight = spatial.scale.y * 0.5f;
@@ -175,8 +175,8 @@ namespace Ortha::UI {
 	}
 
 	void UIRenderSystem::tickSystem(entt::registry& registry) {
-		using namespace Core;
-		using namespace Ortha::Gfx;
+		using namespace Ortha::Core;
+		using namespace Gfx;
 
 		const auto* colourMaterial = getResource<Material>(registry, mUIColourMaterial);
 		if (!colourMaterial) {

@@ -18,7 +18,7 @@ namespace Ortha::UI::UIInputSystemInternal {
 	void processUIElementMouseState(
 		UIElement& element, const glm::vec3& cameraPosition, const Core::GlobalSpatial& spatial,
 		const Input::MouseState& mouseState) {
-		using namespace Ortha::Input;
+		using namespace Input;
 
 		const float halfQuadWidth = spatial.scale.x * 0.5f;
 		const float halfQuadHeight = spatial.scale.y * 0.5f;
@@ -55,7 +55,7 @@ namespace Ortha::UI {
 	}
 
 	void UIInputSystem::tickSystem(entt::registry& registry) {
-		using namespace Core;
+		using namespace Ortha::Core;
 		using namespace Gfx;
 		using namespace Input;
 		using namespace UIInputSystemInternal;
