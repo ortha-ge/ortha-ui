@@ -1,14 +1,14 @@
 
 cmake_minimum_required(VERSION 3.31)
 
-set (ui-lib-src
+set (ortha-ui-src
         src/ui/services/UISystemsService.cpp
         src/ui/systems/UIInputSystem.cpp
         src/ui/systems/UIRenderSystem.cpp
         src/ui/systems/UISystems.cpp
 )
 
-set (ui-lib-modules
+set (ortha-ui-modules
         src/ui/Button.cppm
         src/ui/ImageButton.cppm
         src/ui/services/UIInputSystemService.cppm
@@ -19,11 +19,11 @@ set (ui-lib-modules
         src/ui/systems/UISystems.cppm
 )
 
-add_library(ui-lib STATIC ${ui-lib-src} ${ui-lib-modules})
+add_library(ortha-ui STATIC ${ortha-ui-src} ${ortha-ui-modules})
 
-target_sources(ui-lib PUBLIC FILE_SET modules TYPE CXX_MODULES FILES ${ui-lib-modules})
-target_compile_features(ui-lib PUBLIC cxx_std_23)
-target_link_libraries(ui-lib PUBLIC core-lib gfx-lib input-lib)
-target_include_directories(ui-lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
+target_sources(ortha-ui PUBLIC FILE_SET modules TYPE CXX_MODULES FILES ${ortha-ui-modules})
+target_compile_features(ortha-ui PUBLIC cxx_std_23)
+target_link_libraries(ortha-ui PUBLIC ortha-core ortha-gfx ortha-input)
+target_include_directories(ortha-ui PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 #add_subdirectory(tests)
